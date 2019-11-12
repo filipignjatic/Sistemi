@@ -20,8 +20,9 @@ int main()
 		str = (char *)malloc(num_of_bytes+1);
 		getline(&str, &num_of_bytes, prekidaci);
 		sw1 = str[2] - '0';
+		fclose(prekidaci)
 		if(sw1 == 1)
-{
+		{
 			tasteri = fopen ("/dev/button", "r");
 			if(tasteri == NULL)
 			{
@@ -47,10 +48,10 @@ int main()
 			{
 				fleg = 1;
 				procenat -= 0.2;
-			}
-			if(procenat <= 0)
-			{
-				procenat = 0;
+				if(procenat <= 0)
+				{
+					procenat = 0;
+				}
 			}
 			if(bt3 && !fleg)
 			{
@@ -62,7 +63,7 @@ int main()
 				fleg = 1;
 				procenat = 0;
 			}
-			if(!fleg)
+			if(!bt1 && !bt2 && !bt3 && !bt4)
 			{
 				fleg = 0;
 			}
@@ -101,8 +102,17 @@ int main()
 		}
 		else
 		{
-			puts("Prekidac nije ukljucen !");
-			return -1;
+			ledovke = fopen("/dev/led", "w");
+			if(ledovke == NULL)
+			{
+				puts("Problem prilikom otvaranja led fajla!");
+				return -1;
+			}
+			fputs("0x00", ledovke);
+			if(fclose(ledovke))
+			{
+				puts("Problem prilikom zatvaranja led fajla!");
+			}
 		}
 	}
 }

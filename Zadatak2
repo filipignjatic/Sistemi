@@ -1,0 +1,62 @@
+#include <stdio.h>
+#include <stdlib.h>
+#include <unistd.h>
+
+int main()
+{  
+   int izbor = 0;
+   while (izbor < 5)
+   {  
+      printf("Molimo vas izaberite opciju koju zelite: \n1) Unos novog tima \n2) Poredjenje \n3) Stanje na tabeli\n4) Korigovanje stanja na tabeli\n5) Izadji i sacuvaj\nIzbor: ");
+      scanf("%d", izbor);
+      if(izbor == 1)
+      {
+         dodajtim();
+      }
+      else if(izbor == 2)
+      {
+         puts("Poz1");
+      }
+      else if(izbor == 3)
+      {
+          puts("Poz2");
+      }
+      else if(izbor == 4)
+      {
+         puts("Poz3");
+      }
+      else if(izbor == 5)
+      {
+         return -1;
+      }
+    }
+  }
+ 
+int dodajtim()
+{
+   FILE* tabela;
+   char *str;
+   char ime[15];
+   int redbr;
+   int br_bodovi, br_golova, br_primljenih, br_utakmica;
+   size_t num_bytes = 6;
+   tabela = fopen("tabela.txt", "a+");
+   if(tabela == NULL)
+   {
+      puts("Problem prilikom otvaranja tabela.txt fajla!");
+      return -1;
+   }
+   str = (char *) malloc(num_bytes+1);
+   printf("Stigao 1");
+   getline(&str, &num_bytes, stdin);
+   printf("stigao 2");
+   printf("Unesite ime kluba: ");
+   printf("stigao 3");
+   scanf("%s", ime);
+   redbr = redbr+1;
+   fprintf(tabela, "%d   %s   %d %d %d %d",redbr, &ime, br_bodovi, br_golova, br_primljenih, br_utakmica);
+   printf("Stigao 4");
+   fclose(tabela);
+}
+
+

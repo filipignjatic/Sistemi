@@ -2,36 +2,48 @@
 #include <stdlib.h>
 #include <unistd.h>
 
+int dodajtim();
+
 int main()
 {  
-   int izbor = 0;
-   while (izbor < 5)
-   {  
-      printf("Molimo vas izaberite opciju koju zelite: \n1) Unos novog tima \n2) Poredjenje \n3) Stanje na tabeli\n4) Korigovanje stanja na tabeli\n5) Izadji i sacuvaj\nIzbor: ");
-      scanf("%d", &izbor);
+   int izbor = 1;
+   while (izbor < 6)
+   {
       if(izbor == 1)
+      {  
+        printf("Molimo vas izaberite opciju koju zelite: \n1) Unos novog tima \n2) Poredjenje \n3) Stanje na tabeli\n4) Korigovanje stanja na tabeli\n5) Izadji i sacuvaj\nIzbor: ");
+        scanf("%d", &izbor);
+        printf("izbor je: %d\n", izbor);
+      }
+      if(izbor == 2)
       {
          dodajtim();
-      }
-      else if(izbor == 2)
-      {
-         puts("Poz1");
+        izbor = 0;
       }
       else if(izbor == 3)
       {
-          puts("Poz2");
+         puts("Poz1");
       }
       else if(izbor == 4)
       {
-         puts("Poz3");
+          puts("Poz2");
       }
       else if(izbor == 5)
       {
+         puts("Poz3");
+      }
+      else if(izbor == 6)
+      {
          return -1;
       }
-    }
-  }
- 
+        else
+        {
+                izbor = 1;
+
+        }
+   }
+ } 
+
 int dodajtim()
 {
    FILE* tabela;
@@ -40,6 +52,8 @@ int dodajtim()
    int redbr;
    int br_bodovi, br_golova, br_primljenih, br_utakmica;
    size_t num_bytes = 6;
+   ssize_t linija;
+   
    tabela = fopen("tabela.txt", "a+");
    if(tabela == NULL)
    {
@@ -48,12 +62,20 @@ int dodajtim()
    }
    ime = (char *) malloc(num_bytes+1);
    str = (char *) malloc(num_bytes+1);
-   getline(&str, &num_bytes, stdin);
+   getline(&str, &num_bytes, stdin);   
    printf("Unesite ime kluba: ");
    scanf("%s", ime);
-   fprintf(tabela, "%s   %d %d %d %d", ime, br_bodovi, br_golova, br_primljenih, br_utakmica);
-   printf("Uspesno unet tim: %s   %d %d %d %d", ime, br_bodovi, br_golova, br_primljenih, br_utakmica);
+   while(getline(&str, &num_bytes, tabela) >= 0)
+   {
+        redbr++;
+   }
+   printf("redni broj: %d\n", redbr);
+   br_bodovi = 0;
+   br_golova = 0;
+   br_primljenih = 0;
+   br_utakmica = 0;
+   fprintf(tabela, "%d.  %s   %d %d %d %d\n",redbr, ime, br_bodovi, br_golova, br_primljenih, br_utakmica);
+   printf("Uspesno unet tim: %d  %s   %d %d %d %d\n\n\n",redbr, ime, br_bodovi, br_golova, br_primljenih, br_utakmica);
    fclose(tabela);
+   free(str);
 }
-
-

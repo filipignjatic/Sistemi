@@ -8,7 +8,7 @@ int main()
    while (izbor < 5)
    {  
       printf("Molimo vas izaberite opciju koju zelite: \n1) Unos novog tima \n2) Poredjenje \n3) Stanje na tabeli\n4) Korigovanje stanja na tabeli\n5) Izadji i sacuvaj\nIzbor: ");
-      scanf("%d", izbor);
+      scanf("%d", &izbor);
       if(izbor == 1)
       {
          dodajtim();
@@ -36,7 +36,7 @@ int dodajtim()
 {
    FILE* tabela;
    char *str;
-   char ime[15];
+   char *ime;
    int redbr;
    int br_bodovi, br_golova, br_primljenih, br_utakmica;
    size_t num_bytes = 6;
@@ -46,16 +46,13 @@ int dodajtim()
       puts("Problem prilikom otvaranja tabela.txt fajla!");
       return -1;
    }
+   ime = (char *) malloc(num_bytes+1);
    str = (char *) malloc(num_bytes+1);
-   printf("Stigao 1");
    getline(&str, &num_bytes, stdin);
-   printf("stigao 2");
    printf("Unesite ime kluba: ");
-   printf("stigao 3");
    scanf("%s", ime);
-   redbr = redbr+1;
-   fprintf(tabela, "%d   %s   %d %d %d %d",redbr, &ime, br_bodovi, br_golova, br_primljenih, br_utakmica);
-   printf("Stigao 4");
+   fprintf(tabela, "%s   %d %d %d %d", ime, br_bodovi, br_golova, br_primljenih, br_utakmica);
+   printf("Uspesno unet tim: %s   %d %d %d %d", ime, br_bodovi, br_golova, br_primljenih, br_utakmica);
    fclose(tabela);
 }
 

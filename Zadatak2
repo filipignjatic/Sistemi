@@ -1,9 +1,11 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <unistd.h>
+#include <string.h>
 
 int dodajtim();
 int ispis();
+int poredjenje();
 int korigovanje();
 int main()
 {
@@ -26,7 +28,7 @@ int main()
 		}
 		else if(izbor == 2)
                 {
-			korigovanje();
+			poredjenje();
                         izbor = 0;
                 }
  		else if(izbor == 3)
@@ -36,6 +38,7 @@ int main()
                 }
  		else if(izbor == 4)
                 {
+			korigovanje();
                         izbor = 0;
                 }
 		else if(izbor == 5)
@@ -91,8 +94,8 @@ int ispis()
 	FILE* tabela;
 	size_t num_of_bytes = 6;
 	char ime[10];
-	int rednibr, br_bodova, br_golova, br_primljenih, br_utakmica;
 	int redbr = 0;
+	int rednibr, br_bodova, br_golova, br_primljenih, br_utakmica;
 	tabela = fopen("tabela.txt", "r");
 	if(tabela == NULL)
 	{
@@ -109,10 +112,9 @@ int ispis()
 	fclose(tabela);
 }
 
-int korigovanje()
+int poredjenje()
 {
 	FILE* tabela;
-	size_t num_of_bytes = 6;
 	char ime[10];
 	char znak;
 	int rednibr, br_bodova, br_golova, br_primljenih, br_utakmica;
@@ -144,5 +146,70 @@ int korigovanje()
                         }
                 }
 	} 
+	fclose(tabela);
+}
+
+int korigovanje()
+{
+	FILE *tabela;
+	size_t num_of_bytes = 6;
+	int rednibr, br_bodova, br_golova, br_primljenih, br_utakmica;
+	char ime[10];
+	char pr_ime[10];
+	char dr_ime[10];
+	int prvi_gol;
+	int drugi_gol;
+	int pobednik;
+	printf("====== UTAMKICA =====\n");
+	printf("Unesite ime prvog tima: ");
+	scanf("%s", pr_ime);
+	printf("Unesite ime drugog time: ");
+	scanf("%s", dr_ime);
+	printf("Unesite rezultat [npr 3:2] ");
+	scanf("%d : %d", &prvi_gol, &drugi_gol);
+	if(prvi_gol > drugi_gol)
+	{
+		printf(" %s je pobedio %s rezultatom %d:%d\n", pr_ime, dr_ime,prvi_gol,drugi_gol);
+		pobednik = 1;
+	}
+	else if(prvi_gol < drugi_gol)
+	{
+		printf(" %s je pobedio %s rezultatom %d:%d\n", dr_ime, pr_ime, drugi_gol, prvi_gol);
+		pobednik = 2;	
+	}
+	else if(prvi gol = drugi_gol)
+	{
+		printf(" Rezultat je neresen\n");
+		pobednik = 3;
+	}
+	tabela = fopen("tabela.txt", "a+");
+        while((fscanf(tabela, "%d %s %d %d %d %d", &rednibr, ime, &br_bodova, &br_golova, &br_primljenih, &br_utakmica)) != EOF)
+	{
+		if(strcmp(pr_ime,ime) == 0)
+		{
+			if(pobednik == 1)
+			{
+				br_bodova += 3;
+				printf("Br Bodova 1: %d\n", br_bodova);
+			}
+			else if(pobednik == 3)
+			{
+				br_bodova += 1;
+			}		
+		}
+		if(strcmp(dr_ime, ime) == 0)
+		{
+			if(pobednik == 2)
+			{
+				br_bodova += 3;
+				printf("Br Bodova 2: %d\n", br_bodova);
+			}
+			else if(pobednik == 3)
+			{
+				br_bodova += 1;
+			}
+		}
+		printf("Broj prvih bodova %d\n", br_bodova);
+	}
 	fclose(tabela);
 }

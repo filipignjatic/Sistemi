@@ -32,6 +32,7 @@ int main()
 	    {
 		return -1;
 	    }
+	    printf("\n");
 	}
 	else if(izbor == 1)
 	{
@@ -71,7 +72,7 @@ int dodajtim()
     char *str;
     char *str1;
     char *ime;
-    int redbr;
+    int redbr = 0;
     int br_bodova, br_golova, br_primljenih, br_utakmica;
     size_t num_bytes = 6;
     tabela = fopen("tabela.txt", "a+");
@@ -100,7 +101,6 @@ int dodajtim()
     printf("Uspenso unet tim!\n| Redni broj: %d | Ime: %s\n\n", redbr, ime);
     free(str);
     fclose(tabela);
-    redbr = 0;
 }
 int ispis()
 {
@@ -116,14 +116,10 @@ int ispis()
     }
     rewind(tabela);
     printf("========================================= STANJE NA TABELI ============================================\n\n");
-    printf("Redni br        Ime kluba	Broj bodova	Broj golova     Broj primljenih golova  Broj Utakmica\n");
+    printf("Redni br        Ime kluba       Br Bodova     Golovi[D:P]	   Br Utakmica\n");
     while((fscanf(tabela, "%d %s %d %d %d %d", &rednibr, ime, &br_bodova, &br_golova, &br_primljenih, &br_utakmica)) != EOF)
     {
-	printf ("entered while \n");
-	i++;
-	arr_tim[i].redbr = rednibr;
-	strcpy(arr_tim[i].ime, ime);
-	printf("Ime je : %s \n  Redni broj je: %d\n",arr_tim[i].ime, arr_tim[i].redbr); 
+		printf("%d		 %s		   %d		   %d:%d                  %d\n", rednibr, ime, br_bodova, br_golova, br_primljenih, br_utakmica);
     }
     fclose(tabela);
 }
@@ -135,30 +131,32 @@ int poredjenje()
     char znak;
     int rednibr, br_bodova, br_golova, br_primljenih, br_utakmica;
     int bodovi;
-    printf("Unesite zeljeni broj bodova i znak [< ili >]: ");
-    scanf("%d %s", &bodovi, &znak);
+    printf("Unesite zeljeni znak [ < ili > ]:  ");
+    scanf("%s", &znak);
+    printf("Unesite broj bodova: ");
+    scanf("%d", &bodovi);
     tabela =  fopen("tabela.txt", "r");
     if(znak == '>')
     {
-	printf("=================== LISTA KLUBOVA KOJI IMAJU JEDNAKO ILI VISE BODOVA OD |  %d  | ======================\n", bodovi);
-	printf("Redni br        Ime kluba       Broj bodova     Broj golova     Broj primljenih golova  Broj Utakmica\n");
+	printf("\n\n=================== LISTA KLUBOVA KOJI IMAJU JEDNAKO ILI VISE BODOVA OD |  %d  | ======================\n", bodovi);
+	printf("Redni br        Ime kluba       Br Bodova     Golovi[D:P]	   Br Utakmica\n");
 	while((fscanf(tabela, "%d %s %d %d %d %d", &rednibr, ime, &br_bodova, &br_golova, &br_primljenih, &br_utakmica)) != EOF)
 	{
 	    if(br_bodova >= bodovi)
 	    {
-		printf("%d		 %s		%d		%d		%d			%d\n", rednibr, ime, br_bodova, br_golova, br_primljenih, br_utakmica);
+		printf("%d		 %s		   %d		   %d:%d                  %d\n", rednibr, ime, br_bodova, br_golova, br_primljenih, br_utakmica);
 	    }
 	}
     }
     else if(znak == '<')
     {
-	printf("=================== LISTA KLUBOVA KOJI IMAJU JEDNAKO ILI VISE BODOVA OD |  %d  | ======================\n", bodovi);
-	printf("Redni br        Ime kluba       Broj bodova     Broj golova     Broj primljenih golova  Broj Utakmica\n");
+	printf("\n\n=================== LISTA KLUBOVA KOJI IMAJU JEDNAKO ILI VISE BODOVA OD |  %d  | ======================\n\n", bodovi);
+	printf("Redni br        Ime kluba       Br Bodova     Golovi[D:P]	   Br Utakmica\n");
 	while((fscanf(tabela, "%d %s %d %d %d %d", &rednibr, ime, &br_bodova, &br_golova, &br_primljenih, &br_utakmica)) != EOF)
 	{
 	    if(br_bodova <= bodovi)
 	    {
-		printf("%d               %s             %d              %d              %d                      %d\n", rednibr, ime, br_bodova, br_golova, br_primljenih, br_utakmica);
+		    	printf("%d		 %s		   %d		   %d:%d                  %d\n", rednibr, ime, br_bodova, br_golova, br_primljenih, br_utakmica);
 	    }
 	}
     } 
@@ -177,7 +175,6 @@ int korigovanje()
     int prvi_gol;
     int drugi_gol;
     int pobednik;
-    int line_number = 0;
     printf("====== UTAKMICA =====\n");
     printf("Unesite ime prvog tima: ");
     scanf("%s", pr_ime);
@@ -204,7 +201,7 @@ int korigovanje()
     nova_tabela = fopen("nova_tabela.txt", "w"); // privremena tabela
     while((fscanf(tabela, "%d %s %d %d %d %d", &rednibr, ime, &br_bodova, &br_golova, &br_primljenih, &br_utakmica)) != EOF)
     {
-	int i, swap;
+	int i = 0;
 	i++;
 	arr_tim[i].redbr = rednibr;
 	strcpy(arr_tim[i].ime, ime);
@@ -217,40 +214,54 @@ int korigovanje()
 	    if(pobednik == 1)
 	    {
 		arr_tim[i].br_bodova += 3;
-		arr_tim[i].br_utakmica +=1;
-		printf("Br Bodova 1: %d\n", br_bodova);
+		arr_tim[i].br_utakmica += 1;
+		arr_tim[i].br_golova += prvi_gol;
+		arr_tim[i].br_primljenih += drugi_gol;
+	    }
+	    else if(pobednik == 2)
+	    {
+		arr_tim[i].br_utakmica += 1;
+		arr_tim[i].br_golova += prvi_gol;
+		arr_tim[i].br_primljenih += drugi_gol;
+   	    }
+	    else if(pobednik == 3)
+	    {
+		arr_tim[i].br_bodova += 1;
+		arr_tim[i].br_utakmica += 1;
+		arr_tim[i].br_golova += prvi_gol;
+		arr_tim[i].br_primljenih += drugi_gol;
+	    }
+	   fprintf(nova_tabela, "%d %s %d %d %d %d\n", arr_tim[i].redbr, arr_tim[i].ime, arr_tim[i].br_bodova, arr_tim[i].br_golova, arr_tim[i].br_primljenih, arr_tim[i].br_utakmica);
+	}	
+	else if(strcmp(dr_ime, arr_tim[i].ime) == 0)
+	{
+	    if(pobednik == 2)
+	    {
+	
+		arr_tim[i].br_bodova += 3;
+		arr_tim[i].br_utakmica += 1;
+		arr_tim[i].br_golova += drugi_gol;
+		arr_tim[i].br_primljenih += prvi_gol;
+	    }
+	    else if(pobednik == 2)
+	    {
+		arr_tim[i].br_utakmica += 1;
+		arr_tim[i].br_golova += drugi_gol;
+		arr_tim[i].br_primljenih += prvi_gol;
 	    }
 	    else if(pobednik == 3)
 	    {
 		arr_tim[i].br_bodova += 1;
+		arr_tim[i].br_golova += drugi_gol;
+		arr_tim[i].br_primljenih += prvi_gol;
 	    }
-	    if(arr_tim[i].br_bodova > arr_tim[i+1].br_bodova)
-	    {
-            	swap = arr_tim[i].br_bodova;
-		arr_tim[i].br_bodova = arr_tim[i+1].br_bodova;
-		arr_tim[i+1].br_bodova = swap;
-            }
-	    fprintf(nova_tabela, "%d %s %d %d %d %d\n", rednibr, ime, br_bodova, br_golova, br_primljenih, br_utakmica);
-	}	
-	else if(strcmp(dr_ime, ime) == 0)
-	{
-	    if(pobednik == 2)
-	    {
-		br_bodova += 3;
-		printf("Br Bodova 2: %d\n", br_bodova);
-	    }
-	    else if(pobednik == 3)
-	    {
-		br_bodova += 1;
-	    }
-	    fprintf(nova_tabela, "%d %s %d %d %d %d\n", rednibr, ime, br_bodova, br_golova, br_primljenih, br_utakmica);
+	    fprintf(nova_tabela, "%d %s %d %d %d %d\n", arr_tim[i].redbr, arr_tim[i].ime, arr_tim[i].br_bodova, arr_tim[i].br_golova, arr_tim[i].br_primljenih, arr_tim[i].br_utakmica);
 	}
 	else
-	    fprintf(nova_tabela, "%d %s %d %d %d %d\n", rednibr, ime, br_bodova, br_golova, br_primljenih, br_utakmica);
-	printf("Broj prvih bodova %d\n", br_bodova);
+	fprintf(nova_tabela, "%d %s %d %d %d %d\n", arr_tim[i].redbr, arr_tim[i].ime, arr_tim[i].br_bodova, arr_tim[i].br_golova, arr_tim[i].br_primljenih, arr_tim[i].br_utakmica); 
     }
     fclose(nova_tabela);
     fclose(tabela);
     remove("tabela.txt"); // brisanje stare tabele
-    rename("new_tabela.txt", "tabela.txt"); // reimenovanje nove tabele u staru.
+    rename("nova_tabela.txt", "tabela.txt"); // reimenovanje nove tabele u staru.
 }
